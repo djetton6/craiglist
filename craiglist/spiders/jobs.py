@@ -26,3 +26,8 @@ class JobsSpider(scrapy.Spider):
                 './/a[@class="result-title hdrlnk"]/text()').extract_first()
 
             yield {'date': date, 'link': link, 'text': text}
+
+        next_page_url = response.xpath(
+            '//a[text()="next > "]/@href').extract_first()
+        if next_page_url:
+            yield scrapy.Request(response.urljoin(next_page_url), callback=self.parse)
