@@ -16,7 +16,13 @@ class JobsSpider(scrapy.Spider):
     )
 
     def parse(self, response):
-        listings = response.xpath(
-            '//a[@class="result-title hdrlnk"]/text()').extract()
+        listings = response.xpath('//li[@class="result-row"]')
         for listing in listings:
-            yield {'Listing': listing}
+            date = listing.xpath(
+                './/*[@class="result-date"]/@datetime').extract_first()
+            link = listing.xpath(
+                './/a[@class="result-title hdrlnk"]/@href').extract_first()
+            text = listing.xpath(
+                './/a[@class="result-title hdrlnk"]/text()').extract_first()
+
+            yield {'date': date, 'link': link, 'text': text}
